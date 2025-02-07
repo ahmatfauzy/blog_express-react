@@ -12,3 +12,24 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model IsiBlog {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId  // Pakai @db.ObjectId
+  title     String
+  content   String
+  author    String
+  image     String?
+  createdAt DateTime  @default(now())
+
+  comments  Comment[] @relation("BlogComments")
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  author    String
+  comment   String
+  createdAt DateTime @default(now())
+
+  blogId    String   @db.ObjectId  // Foreign key harus @db.ObjectId juga
+  blog      IsiBlog  @relation("BlogComments", fields: [blogId], references: [id])
+}
